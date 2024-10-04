@@ -4,12 +4,14 @@
   "main": "todo.js",
   "scripts": {
     "start": "node todo.js",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky"
   },
   "author": "Husain Sial <happyhusain12@gmail.com>",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "husky": "^9.1.6",
     "jest": "^29.7.0"
   }
 }
