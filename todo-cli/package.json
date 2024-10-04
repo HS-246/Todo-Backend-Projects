@@ -1,0 +1,15 @@
+{
+  "name": "todo-cli",
+  "version": "1.0.0",
+  "main": "todo.js",
+  "scripts": {
+    "start": "node todo.js",
+    "test": "jest"
+  },
+  "author": "Husain Sial <happyhusain12@gmail.com>",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
