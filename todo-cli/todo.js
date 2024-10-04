@@ -27,8 +27,8 @@ const todoList = () => {
       if (item.dueDate == today) return `[x] ${item.title}`;
       else return `[x] ${item.title} ${item.dueDate}`;
     } else {
-      if (item.dueDate == today) return `[] ${item.title}`;
-      else return `[] ${item.title} ${item.dueDate}`;
+      if (item.dueDate == today) return `[ ] ${item.title}`;
+      else return `[ ] ${item.title} ${item.dueDate}`;
     }
   };
 
