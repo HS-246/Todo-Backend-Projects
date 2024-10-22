@@ -1,6 +1,6 @@
 // models/todo.js
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -15,57 +15,57 @@ module.exports = (sequelize, DataTypes) => {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      // FILL IN HERE
+      await this.overdue();
       console.log("\n");
 
       console.log("Due Today");
-      // FILL IN HERE
+      await this.dueToday();
       console.log("\n");
 
       console.log("Due Later");
-      // FILL IN HERE
+      await this.dueLater();
     }
 
     static async overdue() {
       const overdueTodos = await Todo.findAll({
         where: {
           duedate: {
-            gt: new Date(),
+            [Op.lt]: new Date(),
           },
         },
       });
       const overdueTodosList = overdueTodos
         .map((item) => item.toDisplayableString())
         .join("\n");
-      return overdueTodosList;
+      console.log(overdueTodosList);
     }
 
     static async dueToday() {
       const dueTodos = await Todo.findAll({
         where: {
           duedate: {
-            eq: new Date(),
+            [Op.eq]: new Date(),
           },
         },
       });
       const dueTodosList = dueTodos
         .map((item) => item.toDisplayableString())
         .join("\n");
-      return dueTodosList;
+      console.log(dueTodosList);
     }
 
     static async dueLater() {
       const LaterTodos = await Todo.findAll({
         where: {
           duedate: {
-            lt: new Date(),
+            [Op.gt]: new Date(),
           },
         },
       });
       const LaterTodosList = LaterTodos.map((item) =>
         item.toDisplayableString()
       ).join("\n");
-      return LaterTodosList;
+      console.log(LaterTodosList);
     }
 
     static async markAsComplete(id) {
@@ -83,13 +83,13 @@ module.exports = (sequelize, DataTypes) => {
 
     toDisplayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
-      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
+      return `${this.id}. ${checkbox} ${this.title} ${this.duedate}`;
     }
   }
   Todo.init(
     {
       title: DataTypes.STRING,
-      dueDate: DataTypes.DATEONLY,
+      duedate: DataTypes.DATEONLY,
       completed: DataTypes.BOOLEAN,
     },
     {
