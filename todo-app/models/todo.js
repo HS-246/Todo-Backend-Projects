@@ -24,25 +24,36 @@ module.exports = (sequelize, DataTypes) => {
           where: {
             id,
           },
-        },
+        }
       );
 
       return Todo.findByPk(id);
+    }
+
+    static async delete(id) {
+      const numberOfRowsDeleted = await Todo.destroy({
+        where: {
+          id,
+        },
+      });
+
+      return numberOfRowsDeleted;
     }
 
     static async showList() {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      await this.overdue();
+      const overdue = await this.overdue();
       console.log("\n");
 
       console.log("Due Today");
-      await this.dueToday();
+      const today = await this.dueToday();
       console.log("\n");
 
       console.log("Due Later");
-      await this.dueLater();
+      const later = await this.dueLater();
+      return { overdue, today, later };
     }
 
     static async overdue() {
@@ -57,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         .map((item) => item.toDisplayableString())
         .join("\n");
       console.log(overdueTodosList);
+      return overdueTodos;
     }
 
     static async dueToday() {
@@ -71,6 +83,7 @@ module.exports = (sequelize, DataTypes) => {
         .map((item) => item.toDisplayableString())
         .join("\n");
       console.log(dueTodosList);
+      return dueTodos;
     }
 
     static async dueLater() {
@@ -82,9 +95,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       const LaterTodosList = LaterTodos.map((item) =>
-        item.toDisplayableString(),
+        item.toDisplayableString()
       ).join("\n");
       console.log(LaterTodosList);
+      return LaterTodos;
     }
 
     toDisplayableString() {
@@ -101,7 +115,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Todo",
-    },
+    }
   );
   return Todo;
 };

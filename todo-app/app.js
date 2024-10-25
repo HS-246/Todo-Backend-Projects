@@ -5,9 +5,9 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 app.get("/todos", async (request, response) => {
-  await Todo.showList();
+  const allTodos = await Todo.showList();
 
-  return response.status(200).send("All Okay");
+  return response.status(200).json(allTodos);
 });
 
 app.post("/todos", async (request, response) => {
@@ -38,9 +38,11 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
   }
 });
 
-app.delete("/todos/:id", (request, response) => {
+app.delete("/todos/:id", async (request, response) => {
   console.log("Deleteing todo with id: ", request.params.id);
-  return response;
+  const deleted = await Todo.delete(request.params.id);
+  if (deleted) return response.send(true);
+  return response.send(false);
 });
 
 module.exports = app;

@@ -24,7 +24,7 @@ describe("Todo test suite", () => {
     });
     expect(response.statusCode).toBe(200);
     expect(response.header["content-type"]).toBe(
-      "application/json; charset=utf-8",
+      "application/json; charset=utf-8"
     );
     const parsedResponse = JSON.parse(response.text);
     expect(parsedResponse.id).toBeDefined();
@@ -45,5 +45,20 @@ describe("Todo test suite", () => {
       .send();
     const parsedUpdatedResponse = JSON.parse(markasCompletedResponse.text);
     expect(parsedUpdatedResponse.completed).toBe(true);
+  });
+
+  test("check deletion", async () => {
+    const response = await agent.post("/todos").send({
+      title: "buy milk",
+      dueDate: new Date().toISOString(),
+    });
+    const parsedResponse = JSON.parse(response.text);
+    const todoID = parsedResponse.id;
+
+    expect(parsedResponse.id).toBeDefined();
+
+    const deletedResponse = await agent.delete(`/todos/${todoID}`).send();
+    const parsedDeletedResponse = JSON.parse(deletedResponse.text);
+    expect(parsedDeletedResponse).toBe(true);
   });
 });
