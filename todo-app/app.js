@@ -2,7 +2,25 @@ const express = require("express");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
+const path = require("path");
+
 app.use(bodyParser.json());
+
+//set EJS as view engine
+app.set("view engine", "ejs");
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", async (request, response) => {
+  const alltodos = await Todo.getAllTodos();
+  if (request.accepts("html")) {
+    return response.render("index", {
+      alltodos,
+    });
+  } else {
+    return response.json(alltodos);
+  }
+});
 
 app.get("/todos", async (request, response) => {
   const allTodos = await Todo.showList();

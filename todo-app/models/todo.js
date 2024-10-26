@@ -40,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
       return numberOfRowsDeleted;
     }
 
+    static async getAllTodos() {
+      //console.log(await this.findAll());
+
+      return await this.findAll();
+    }
+
     static async showList() {
       console.log("My Todo list \n");
 
