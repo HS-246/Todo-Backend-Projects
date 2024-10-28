@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
 //set EJS as view engine
 app.set("view engine", "ejs");
@@ -32,12 +33,12 @@ app.post("/todos", async (request, response) => {
   console.log("Get Todo", request.body);
 
   try {
-    const todo = await Todo.addTodo({
+    await Todo.addTodo({
       title: request.body.title,
       dueDate: request.body.dueDate,
     });
 
-    return response.json(todo);
+    return response.redirect("/");
   } catch (err) {
     console.log(err);
     return response.status(422);
