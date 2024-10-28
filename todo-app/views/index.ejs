@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Todo List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
@@ -11,6 +11,7 @@
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <%-include('header.ejs') %>
+
         <form>
           <div class="flex gap-2 py-4">
             <div class="flex-auto">
@@ -34,18 +35,11 @@
             </div>
           </div>
         </form>
+
+        <%- include('todos.ejs') %>
       </div>
     </div>
 
-    <!-- <table>
-        <% for( let i = 0; i < alltodos.length; i++ ) { %>
-            <tr>
-                <td>
-                   <%= alltodos[i].title%>
-                </td>
-            </tr>
-        <% } %>
-        
-    </table> -->
+    <%- include('footer.ejs') %>
   </body>
 </html>
