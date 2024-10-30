@@ -1,4 +1,6 @@
 const express = require("express");
+const csurf = require("csurf");
+const cookieParser = require("cookie-parser");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
@@ -6,6 +8,8 @@ const path = require("path");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser("some secret string"));
+app.use(csurf({ cookie: true }));
 
 //set EJS as view engine
 app.set("view engine", "ejs");
@@ -17,6 +21,7 @@ app.get("/", async (request, response) => {
   if (request.accepts("html")) {
     return response.render("index", {
       alltodos,
+      csrfToken: request.csrfToken(),
     });
   } else {
     return response.json(alltodos);

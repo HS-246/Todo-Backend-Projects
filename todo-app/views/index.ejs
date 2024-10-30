@@ -3,16 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <title>Todo List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
     <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
       function updateTodo(id) {
         id = Number(id);
 
         fetch(`/todos/${id}/update`, {
           method: "put",
           headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
         })
           .then((res) => {
             if (res.ok) {
@@ -33,6 +40,9 @@
         fetch(`/todos/${id}`, {
           method: "delete",
           headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
         })
           .then((res) => {
             if (res.ok) {
@@ -53,6 +63,7 @@
         <%-include('header.ejs') %>
 
         <form action="/todos" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 py-4">
             <div class="flex-auto">
               <input
