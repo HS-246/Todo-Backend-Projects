@@ -15,10 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
 
-    static async markasComplete(id) {
+    static async Update(id) {
+      //id = Number(id);
+      const todo = await Todo.findByPk(id);
+      console.log(`${todo.id}  ${todo.completed}`);
+
       await Todo.update(
         {
-          completed: true,
+          completed: !todo.completed,
         },
         {
           where: {
@@ -27,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
 
-      return Todo.findByPk(id);
+      return await Todo.findByPk(id);
     }
 
     static async delete(id) {
@@ -109,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
 
     toDisplayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
-      return `${this.id}. ${checkbox} ${this.title} ${this.duedate}`;
+      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
     }
   }
   Todo.init(

@@ -45,11 +45,13 @@ app.post("/todos", async (request, response) => {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async (request, response) => {
-  console.log("Mark todo as complete with id: ", request.params.id);
+app.put("/todos/:id/update", async (request, response) => {
+  console.log("update with id: ", request.params.id);
   try {
     //const todo = await Todo.findByPk(request.params.id);
-    const updated = await Todo.markasComplete(request.params.id);
+    const updated = await Todo.Update(request.params.id);
+    console.log(`${updated.id} ${updated.completed}`);
+
     return response.json(updated);
   } catch (err) {
     console.log(err);

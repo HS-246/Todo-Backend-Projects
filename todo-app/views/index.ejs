@@ -6,6 +6,46 @@
     <title>Todo List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
+    <script>
+      function updateTodo(id) {
+        id = Number(id);
+
+        fetch(`/todos/${id}/update`, {
+          method: "put",
+          headers: { "content-type": "application/json" },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            console.log(typeof id);
+
+            //console.error(err);
+          });
+      }
+
+      function deleteTodo(id) {
+        id = Number(id);
+        console.log("delete function called for id: " + id);
+
+        fetch(`/todos/${id}`, {
+          method: "delete",
+          headers: { "content-type": "application/json" },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            console.log(typeof id);
+
+            //console.error(err);
+          });
+      }
+    </script>
   </head>
   <body>
     <div class="grid grid-cols-6">
