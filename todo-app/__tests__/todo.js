@@ -49,8 +49,8 @@ describe("Todo test suite", () => {
       .get("/")
       .set("Accept", "application/json");
     const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
-    const latestTodoIndex = parsedGroupedResponse["today"].length;
-    const latestTodo = parsedGroupedResponse["today"][latestTodoIndex - 1];
+    const latestTodoIndex = parsedGroupedResponse["Due"].length;
+    const latestTodo = parsedGroupedResponse["Due"][latestTodoIndex - 1];
 
     res = await agent.get("/");
     csrfToken = extractCsrfToken(res);

@@ -1,5 +1,6 @@
 "use strict";
-const { Model, Op } = require("sequelize");
+// eslint-disable-next-line no-unused-vars
+const { Model, Op, where } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -7,9 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    // eslint-disable-next-line no-unused-vars
     static associate(models) {
-      // define association here
+      Todo.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
     }
     static addTodo({ title, dueDate }) {
       return this.create({ title: title, dueDate: dueDate, completed: false });
@@ -54,16 +56,33 @@ module.exports = (sequelize, DataTypes) => {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      const overdue = await this.overdue();
+      const Overdue = await this.overdue();
       console.log("\n");
 
       console.log("Due Today");
-      const today = await this.dueToday();
+      const Due = await this.dueToday();
       console.log("\n");
 
       console.log("Due Later");
-      const later = await this.dueLater();
-      return { overdue, today, later };
+      const Later = await this.dueLater();
+
+      console.log("Completed Items");
+      const Completed = await this.completedTodos();
+
+      return { Overdue, Due, Later, Completed };
+    }
+
+    static async completedTodos() {
+      const completedTodos = await Todo.findAll({
+        where: {
+          completed: true,
+        },
+      });
+      const completedList = completedTodos
+        .map((item) => item.toDisplayableString())
+        .join("\n");
+      console.log(completedList);
+      return completedTodos;
     }
 
     static async overdue() {
@@ -72,6 +91,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.lt]: new Date(),
           },
+          completed: false,
         },
       });
       const overdueTodosList = overdueTodos
@@ -87,6 +107,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.eq]: new Date(),
           },
+          completed: false,
         },
       });
       const dueTodosList = dueTodos
@@ -102,6 +123,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.gt]: new Date(),
           },
+          completed: false,
         },
       });
       const LaterTodosList = LaterTodos.map((item) =>
