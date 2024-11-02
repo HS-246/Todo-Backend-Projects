@@ -23,8 +23,21 @@ describe("Todo test suite", () => {
     server.close();
   });
 
+  test("signup working", async () => {
+    let res = await agent.get("/signup");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/users").send({
+      firstName: "Test",
+      lastName: "User A",
+      email: "testuser@gmail.com",
+      password: "12345678",
+      _csrf: csrfToken,
+    });
+    expect(res.statusCode).toBe(302);
+  });
+
   test("respond to /todos with json", async () => {
-    const res = await agent.get("/");
+    const res = await agent.get("/todos");
     const csrfToken = extractCsrfToken(res);
 
     const response = await agent.post("/todos").send({
@@ -36,7 +49,7 @@ describe("Todo test suite", () => {
   });
 
   test("marks as complete", async () => {
-    let res = await agent.get("/");
+    let res = await agent.get("/todos");
     let csrfToken = extractCsrfToken(res);
 
     await agent.post("/todos").send({
@@ -46,13 +59,13 @@ describe("Todo test suite", () => {
     });
 
     const groupedTodosResponse = await agent
-      .get("/")
+      .get("/todos")
       .set("Accept", "application/json");
     const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
     const latestTodoIndex = parsedGroupedResponse["Due"].length;
     const latestTodo = parsedGroupedResponse["Due"][latestTodoIndex - 1];
 
-    res = await agent.get("/");
+    res = await agent.get("/todos");
     csrfToken = extractCsrfToken(res);
 
     const markAsCompleteResponse = await agent

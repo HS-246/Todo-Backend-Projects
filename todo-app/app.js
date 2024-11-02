@@ -12,6 +12,7 @@ const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("some secret string"));
@@ -25,9 +26,17 @@ app.use(
   })
 );
 
+const flash = require("connect-flash");
+
+app.use(flash());
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
+//passport strategy
 passport.use(
   new LocalStrategy(
     {
@@ -41,11 +50,11 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid Password");
+            return done(null, false, { message: "Invalid Password!" });
           }
         })
         .catch((err) => {
-          return err;
+          return done(null, false, { message: "Email not registered!" });
         });
     }
   )
@@ -100,13 +109,33 @@ app.get(
   }
 );
 
+//render signup page
+app.get("/signup", (request, response) => {
+  if (request.accepts("html")) {
+    return response.render("signup", { csrfToken: request.csrfToken() });
+  } else {
+    return response.send("Signup page");
+  }
+});
+
+//render login page
+app.get("/login", (request, response) => {
+  if (request.accepts("html")) {
+    return response.render("login", {
+      csrfToken: request.csrfToken(),
+    });
+  } else {
+    return response.send("Login page");
+  }
+});
+
 //add todo
 app.post(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     console.log("Get Todo", request.body);
-    console.log(request.user);
+    //console.log(request.user);
 
     try {
       await Todo.addTodo({
@@ -150,15 +179,6 @@ app.delete(
   }
 );
 
-//render signup page
-app.get("/signup", (request, response) => {
-  if (request.accepts("html")) {
-    return response.render("signup", { csrfToken: request.csrfToken() });
-  } else {
-    return response.send("Signup page");
-  }
-});
-
 //add signup info to db
 app.post("/users", async (request, response) => {
   //hash passowrd
@@ -185,21 +205,14 @@ app.post(
   "/session",
   passport.authenticate("local", {
     failureRedirect: "/login",
+    failureFlash: true,
   }),
   (request, response) => {
     return response.redirect("/todos");
   }
 );
 
-//render login page
-app.get("/login", (request, response) => {
-  if (request.accepts("html")) {
-    return response.render("login", { csrfToken: request.csrfToken() });
-  } else {
-    return response.send("Login page");
-  }
-});
-
+//signout
 app.get("/signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {
