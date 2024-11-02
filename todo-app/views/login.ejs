@@ -13,6 +13,10 @@
       <div class="col-start-3 col-span-2">
         <%-include('header.ejs') %>
         <h6 class="py-6 font-large">Login</h6>
+        <p class="py-2">
+          New here? Sign-up
+          <a href="/signup" class="text-green-600 underline">here</a>
+        </p>
 
         <form action="/session" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
@@ -39,5 +43,6 @@
         </form>
       </div>
     </div>
+    <%- include('footer.ejs') %>
   </body>
 </html>

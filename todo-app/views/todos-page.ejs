@@ -61,6 +61,11 @@
     <div class="grid grid-cols-6 flex-grow">
       <div class="col-start-3 col-span-2">
         <%-include('header.ejs') %>
+        <a
+          href="/signout"
+          class="text-red-600 underline hover:text-red-800 hover:no-underline"
+          >Sign out</a
+        >
 
         <form action="/todos" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

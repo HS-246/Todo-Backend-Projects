@@ -13,14 +13,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
     }
-    static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
+    static addTodo({ title, dueDate, userId }) {
+      return this.create({
+        title: title,
+        dueDate: dueDate,
+        completed: false,
+        userId,
+      });
     }
 
-    static async Update(id) {
+    static async Update(id, userId) {
       //id = Number(id);
       const todo = await Todo.findByPk(id);
-      console.log(`${todo.id}  ${todo.completed}`);
 
       await Todo.update(
         {
@@ -28,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
           where: {
+            userId,
             id,
           },
         }
@@ -36,9 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       return await Todo.findByPk(id);
     }
 
-    static async delete(id) {
+    static async delete(id, userId) {
       const numberOfRowsDeleted = await Todo.destroy({
         where: {
+          userId,
           id,
         },
       });
@@ -52,30 +58,31 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll();
     }
 
-    static async showList() {
+    static async showList(userId) {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      const Overdue = await this.overdue();
+      const Overdue = await this.overdue(userId);
       console.log("\n");
 
       console.log("Due Today");
-      const Due = await this.dueToday();
+      const Due = await this.dueToday(userId);
       console.log("\n");
 
       console.log("Due Later");
-      const Later = await this.dueLater();
+      const Later = await this.dueLater(userId);
 
       console.log("Completed Items");
-      const Completed = await this.completedTodos();
+      const Completed = await this.completedTodos(userId);
 
       return { Overdue, Due, Later, Completed };
     }
 
-    static async completedTodos() {
+    static async completedTodos(userId) {
       const completedTodos = await Todo.findAll({
         where: {
           completed: true,
+          userId,
         },
       });
       const completedList = completedTodos
@@ -85,13 +92,14 @@ module.exports = (sequelize, DataTypes) => {
       return completedTodos;
     }
 
-    static async overdue() {
+    static async overdue(userId) {
       const overdueTodos = await Todo.findAll({
         where: {
           dueDate: {
             [Op.lt]: new Date(),
           },
           completed: false,
+          userId,
         },
       });
       const overdueTodosList = overdueTodos
@@ -101,13 +109,14 @@ module.exports = (sequelize, DataTypes) => {
       return overdueTodos;
     }
 
-    static async dueToday() {
+    static async dueToday(userId) {
       const dueTodos = await Todo.findAll({
         where: {
           dueDate: {
             [Op.eq]: new Date(),
           },
           completed: false,
+          userId,
         },
       });
       const dueTodosList = dueTodos
@@ -117,13 +126,14 @@ module.exports = (sequelize, DataTypes) => {
       return dueTodos;
     }
 
-    static async dueLater() {
+    static async dueLater(userId) {
       const LaterTodos = await Todo.findAll({
         where: {
           dueDate: {
             [Op.gt]: new Date(),
           },
           completed: false,
+          userId,
         },
       });
       const LaterTodosList = LaterTodos.map((item) =>
