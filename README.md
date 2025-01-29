@@ -3,7 +3,7 @@ This is my first project made specifically to learn how backend programming and 
 It is a basic todo list tracker that has functionalities such as login, signup, database connectivity, auto refresh etc.
 The project makes use of the Sequelize library to manage a PostgreSQL database.
 It uses Express.js for routing, Jest for unit tests and EJS templating for frontend design.
-The Website has a primitive and minimalistice front end since that was not the focus but thanks to EJS I can use JS scripting inside HTML code to make the rocess much easier.
+The Website has a primitive and minimalistice front end since that was not the focus but thanks to EJS I can use JS scripting inside HTML code to make the process much easier.
 
 Below are Screenshots of parts of this project.
 
